@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <div id="category_menu" th:fragment="categoryFragment">
+    <ul class="nav justify-content-center" id="first_category">
+      <li class="nav-item" th:each="category : ${userCateList}">
+        <a class="nav-link active" href="#" th:data-cat_code="${category.cat_code }" th:text="${category.cat_name }"></a>
+      </li>
+    </ul>
+  </div>
+</html>

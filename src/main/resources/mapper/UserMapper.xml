@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.docmall.basic.user.UserMapper">
+
+	<!-- 회원가입 -->
+	<insert id="join" parameterType="UserVO">
+
+
+		INSERT INTO mbsp_tbl (
+		mbsp_id,
+		mbsp_password,
+		mbsp_name,
+		mbsp_nick,
+		mbsp_email,
+		mbsp_zipcode,
+		mbsp_addr,
+		mbsp_deaddr,
+		mbsp_phone
+		) VALUES (
+		#{mbsp_id},
+		#{mbsp_password},
+		#{mbsp_name},
+		#{mbsp_nick},
+		#{mbsp_email},
+		#{mbsp_zipcode},
+		#{mbsp_addr},
+		#{mbsp_deaddr},
+		#{mbsp_phone}
+		)
+
+	</insert>
+
+
+	<!-- 아이디 중복체크 -->
+	<select id="idCheck" resultType="String" parameterType="String">
+
+		SELECT
+		mbsp_id
+		FROM
+		mbsp_tbl
+		WHERE
+		mbsp_id = #{mbsp_id}
+
+
+	</select>
+
+	<select id="login" resultType="UserVO" parameterType="String">
+
+		SELECT
+		mbsp_id,
+		mbsp_name,
+		mbsp_email,
+		mbsp_password,
+		mbsp_zipcode,
+		mbsp_addr,
+		mbsp_deaddr,
+		mbsp_phone,
+		mbsp_nick,
+		mbsp_receive,
+		mbsp_point,
+		mbsp_lastlogin,
+		mbsp_datesub,
+		mbsp_updatedate
+		FROM
+		mbsp_tbl
+		WHERE
+		mbsp_id =
+		#{mbsp_id}
+
+	</select>
+
+	<select id="idFind" resultType="String">
+
+		SELECT
+		mbsp_id
+		FROM
+		mbsp_tbl
+		WHERE
+		mbsp_name = #{mbsp_name}
+		AND
+		mbsp_email = #{mbsp_email}
+
+
+	</select>
+
+	<select id="pwFind" resultType="String" parameterType="map">
+
+		SELECT
+		mbsp_email
+		FROM
+		mbsp_tbl
+		WHERE
+		mbsp_id = #{mbsp_id}
+		AND
+		mbsp_name = #{mbsp_name}
+		AND
+		mbsp_email = #{mbsp_email}
+
+
+	</select>
+
+	<update id="tempPwUpdate" parameterType="map">
+		UPDATE
+		mbsp_tbl
+		SET
+		mbsp_password = #{temp_enc_pw}
+		WHERE
+		mbsp_id = #{mbsp_id}
+
+	</update>
+	
+	<update id="modify"
+		parameterType="UserVO">
+		UPDATE
+		mbsp_tbl
+		SET
+		mbsp_email = #{mbsp_email},
+		mbsp_zipcode = #{mbsp_zipcode},
+		mbsp_addr = #{mbsp_addr},
+		mbsp_deaddr = #{mbsp_deaddr},
+		mbsp_phone = #{mbsp_phone}
+		WHERE
+		mbsp_id = #{mbsp_id}
+
+	</update>
+	
+	<update id="changePw" parameterType="map">
+
+		UPDATE
+		mbsp_tbl
+		SET
+		mbsp_password = #{new_pwd}
+		WHERE
+		mbsp_id = #{mbsp_id}
+
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM
+		mbsp_tbl
+		WHERE
+		mbsp_id = #{mbsp_id}
+	
+	</delete>
+	
+	<select id="existUserInfo">
+		SELECT
+		sns_login_type
+		FROM
+		mbsp_tbl
+		WHERE 
+		mbsp_email = #{sns_email}
+	
+	</select>
+	
+	<!-- SNS 카카오, 네이버 사용자 중복체크 --> 
+	<select id="snsUserCheck" resultType="String">
+		SELECT
+		email
+		FROM
+		sns_user_tbl
+		WHERE
+		email = #{sns_email}
+	</select>
+	
+	<insert id="snsUserInsert" parameterType="com.docmall.basic.user.SNSUserDto">
+	
+	INSERT INTO
+		sns_user_tbl(id, nickname, email, sns_type)
+	VALUES
+		(#{id}, #{nickname}, #{email}, #{sns_type})	
+		
+	
+	</insert>
+
+</mapper>

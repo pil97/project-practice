@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+<body>
+	<th:block layout:fragment="content">
+		<div class="container">
+			<main role="main" class="flex-shrink-0">
+				<div class="container">
+					<h1 class="mt-3 mb-4 text-center">회원탈퇴</h1>
+					<div class="row">
+						<div class="col-4">
+							<section th:replace="~{user/comm/mypage_menu}"></section>
+						</div>
+						<div class="col-8">
+							<form class="form-horizontal" id="deleteForm"
+							th:action="@{/user/delete}" method="post">
+								<div class="card-body">
+									<!--  -->
+
+									<div class="form-group row">
+										<label for="mbsp_password" class="col-sm-6 col-form-label">비밀번호</label>
+										<div class="col-sm-6">
+											<input type="password" class="form-control" id="mbsp_password"
+												name="mbsp_password" />
+										</div>
+									</div>
+
+									<!--  -->
+								</div>
+
+								<div class="card-footer">
+									<!-- <button type="submit" class="btn btn-info" id="btnJoin">Sign</button> -->
+									<button type="button" class="btn btn-info btn-block"
+										id="btnDelete">회원 탈퇴</button>
+								</div>
+							</form>
+						</div>
+						s
+					</div>
+					<div th:replace="~{layout/comm/footer :: footerFragment}"></div>
+				</div>
+			</main>
+		</div>
+	</th:block>
+	<th:block layout:fragment="script">
+		<!-- jquery 문법을 쓸려면 inline 여기 태그 안에 넣어야함 안쓰는경우 밖에 써두 됨 -->
+		<script th:inline="javascript">
+		  let msg = [[${msg}]]; 	      
+
+			if (msg == "fail") {
+				alert("비밀번호를 확인해주세요.");
+				$("#mbsp_password").focus();
+			};
+		
+		
+		
+			$(document).ready(function() {
+				// 비밀번호 변경 버튼 클릭
+				$("#btnDelete").on("click", function() {
+					// 현재 비밀번호 입력 확인
+					if ($("#mbsp_password").val() == "") {						
+						alert("비밀번호를 입력하세요.");
+						$("#mbsp_password").focus();
+						return;
+					}
+					
+
+
+					$("#deleteForm").submit();
+				});
+	            
+	          });// ready event end
+		</script>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head th:replace="~{layout/comm/config :: configFragment}"></head>
+  <body>
+    <div th:replace="~{layout/comm/header :: headerFragment}"></div>
+    <div th:replace="~{layout/comm/category :: categoryFragment}"></div>
+    <th:block layout:fragment="content">
+      <!-- 각각의 페이지에서 구현하고자 하는 컨텐츠를 작성 -->
+    </th:block>
+
+    <th:block th:replace="~{layout/comm/script :: script}"></th:block>
+
+    <th:block layout:fragment="script">
+      <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
+    </th:block>
+
+    <script th:inline="javascript">
+      $(document).ready(function () {
+        // 1차 카테고리 선택
+        $("div#category_menu li a").on("mouseover", function (e) {
+          e.preventDefault();
+
+          let curFirstCategory = $(this);
+
+          let cate_code = $(this).data("cat_code");
+
+          // 2차 카테고리 주소
+          let url = "/admin/category/secondcategory/" + cate_code;
+
+          $.getJSON(url, function (secondCategoryResult) {
+            let str = '<ul class="nav justify-content-center" id="second_category">';
+
+            for (let i = 0; i < secondCategoryResult.length; i++) {
+              str += '<li class="nav-item">';
+              str += `<a class="nav-link active" href="#" data-cat_code="${secondCategoryResult[i].cat_code}">${secondCategoryResult[i].cat_name}</a>`;
+              str += "</li>";
+            }
+
+            str += "</ul>";
+            // console.log(str);
+            
+            curFirstCategory.parents("div#category_menu").find("ul#second_category").remove();
+            curFirstCategory.parents("div#category_menu").append(str);
+         
+          });
+        });
+
+        // 2차 카테고리 선택
+        $("div#category_menu").on("click", "ul#second_category li a", function (e) {
+          e.preventDefault();
+
+          let cat_code = $(this).data("cat_code");
+          let cat_name = encodeURIComponent($(this).html()); // 인코딩 작업 -> & 특수문자 때문에
+
+          console.log("2차 카테고리 코드 : " + cat_code);
+          console.log("2차 카테고리 이름 : " + cat_name);
+
+          // cat_name=맨투맨&후드티 -> & 특수문자로 인하여 서버에서는 맨투맨 문자열만 인식됨
+          location.href = `/product/productlist?cat_code=${cat_code}&cat_name=${cat_name}`;
+        });
+      });
+    </script>
+
+    <!-- 레이아웃 태그는 재정의 가능 -->
+    <!-- replace 대체 -->
+  </body>
+</html>

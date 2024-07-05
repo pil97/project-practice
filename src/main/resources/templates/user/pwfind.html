@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+<body>
+	<th:block layout:fragment="content">
+		<div class="container">
+			<main role="main" class="flex-shrink-0">
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="card card-info">
+								<div class="card-header">
+									<h3 class="card-title">비밀번호 찾기</h3>
+								</div>
+
+								<form class="form-horizontal" id="pwFindForm"
+									th:action="@{/user/pwfind}" method="post" ]>
+									<div class="card-body">
+										<!--  -->
+										<div class="form-group row">
+											<label for="mbsp_id" class="col-sm-4 col-form-label">아이디</label>
+											<div class="col-sm-8">
+												<input type="text" class="form-control" id="mbsp_id"
+													name="mbsp_id" placeholder="아이디 입력" />
+											</div>
+										</div>
+
+										<div class="form-group row">
+											<label for="mbsp_name" class="col-sm-4 col-form-label">이름</label>
+											<div class="col-sm-8">
+												<input type="text" class="form-control" id="mbsp_name"
+													name="mbsp_name" placeholder="이름 입력" />
+											</div>
+										</div>
+
+										<div class="form-group row">
+											<label for="mbsp_email" class="col-sm-4 col-form-label">이메일</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="mbsp_email"
+													name="mbsp_email" placeholder="이메일 입력" />
+											</div>
+											<div class="col-sm-2">
+												<button type="button" class="btn btn-link"
+													id="btnMailAuthCode">인증번호 발송</button>
+											</div>
+										</div>
+
+										<div class="form-group row">
+											<!-- col-sm-12 로 나눠서 *sm 생략가능 -->
+											<label for="authcode" class="col-sm-4 col-form-label">인증코드</label>
+											<div class="col-sm-8">
+												<input type="text" class="form-control" id="u_authcode"
+													name="u_authcode" placeholder="인증코드를 입력하세요." />
+											</div>
+										</div>
+										<!--  -->
+									</div>
+
+									<div class="card-footer text-center">
+										<button type="submit" class="btn btn-info btn-block"
+											id="btnPw">비밀번호 재발급</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div th:replace="~{layout/comm/footer :: footerFragment}"></div>
+				</div>
+			</main>
+		</div>
+	</th:block>
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+        let msg = [[${msg}]]; 
+        let id = [[${mbsp_id}]];
+        let name = [[${mbsp_name}]];
+        let email = [[${mbsp_email}]];
+        
+		/* 임시비밀번호 페이지로 먼저 설정한 경우 -> 로그인 페이지 이동 */
+        /* location.href = "/user/login" */
+       	if (msg == "failInput") {
+            alert("입력정보를 확인 해주세요.");
+            document.getElementById("mbsp_id").focus();
+            document.getElementById("mbsp_id").value = id;
+            document.getElementById("mbsp_name").value = name;
+            document.getElementById("mbsp_email").value = email;
+          } else if (msg == "failAuth") {
+            alert("인증코드를 확인 해주세요.");
+            document.getElementById("u_authcode").focus();
+            document.getElementById("mbsp_id").value = id;
+            document.getElementById("mbsp_name").value = name;
+            document.getElementById("mbsp_email").value = email;
+          }
+
+          $(document).ready(function () {
+            // 메일 인증 버튼
+            $("#btnMailAuthCode").on("click", function () {
+              // 메일 입력 값 확인
+              if ($("#mbsp_email").val() == "") {
+                alert("메일을 입력하세요.");
+                $("#mbsp_email").focus();
+                return;
+              }
+
+              $.ajax({
+                url: "/email/authcode",
+                type: "get",
+                data: {
+                  receiverMail: $("#mbsp_email").val(),
+                  type: "emailPw", // 타임리프 파일명
+                },
+                dataType: "text",
+                success: function (result) {
+                  if (result == "success") {
+                    alert("메일로 인증코드가 발급되었습니다.");
+                  }
+                },
+              });
+            });
+
+            // ready event end
+          });
+      </script>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/baselayout}">
+<body>
+	<th:block layout:fragment="content">
+		<div class="container">
+			<main role="main" class="flex-shrink-0">
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="card card-info">
+								<div class="card-header">
+									<h3 class="card-title">로그인</h3>
+								</div>
+
+								<form class="form-horizontal" id="loginForm"
+									th:action="@{/user/login}" method="post">
+									<div class="card-body">
+										<!--  -->
+										<div class="form-group row">
+											<!-- col-sm-12 로 나눠서 *sm 생략가능 -->
+											<label for="mbsp_id" class="col-sm-2 col-form-label">아이디</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="mbsp_id"
+													name="mbsp_id" placeholder="아이디 입력" />
+											</div>
+										</div>
+
+										<div class="form-group row">
+											<label for="mbsp_password" class="col-sm-2 col-form-label">비밀번호</label>
+											<div class="col-sm-6">
+												<input type="password" class="form-control"
+													id="mbsp_password" name="mbsp_password"
+													placeholder="비밀번호 입력" />
+											</div>
+										</div>
+										<!--  -->
+									</div>
+
+									<div class="card-footer text-center">
+										<button type="submit" class="btn btn-info btn-block"
+											id="btnJoin">Login</button>
+									</div>
+
+									<div class="card-footer text-center">
+										<div class="form-group row">
+											<div class="col-sm-6">
+												<a th:href="@{/oauth2/kakaologin}"> <img
+													th:src="@{/image/sns/kakao_login_medium_wide.png}">
+												</a>
+											</div>
+											<div class="col-sm-6">
+													<a th:href="@{/oauth2/naverlogin}"> <img
+													th:src="@{/image/sns/naver_login_large.png}" style="width:310px;height:43px;">
+												</a>
+											</div>
+										</div>
+									</div>
+
+								</form>
+
+								<!-- 링크 -->
+								<div class="card-footer text-center">
+									<a th:href="@{/user/idfind}">아이디 찾기</a> <a
+										th:href="@{/user/pwfind}">비밀번호 찾기</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div th:replace="~{layout/comm/footer :: footerFragment}"></div>
+				</div>
+			</main>
+		</div>
+	</th:block>
+
+	<th:block layout:fragment="script">
+		<!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
+		<script th:inline="javascript">
+	      let msg = [[${msg}]]; // "failPW" or "failID"
+	
+	      if(msg == "successTempPw") {
+	        	alert("임시비밀번호를 메일로 발송했습니다.")
+	      }
+	      
+	      if(msg == "successID") {
+	        	alert("아이디를 메일로 발송했습니다.")
+	      }
+	      
+	      if (msg == "failID") {
+	        alert("아이디가 존재하지 않습니다.");
+	        document.getElementById("mbsp_id").focus();
+	      } else if (msg == "failPW") {
+	        alert("비밀번호가 일치하지 않습니다.");
+	        document.getElementById("mbsp_password").focus();
+	      }
+	
+	      $(document).ready(function () {
+	        // ready event end
+	      });
+    	</script>
+	</th:block>
+
+</body>
+</html>
